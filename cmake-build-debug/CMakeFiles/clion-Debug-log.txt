@@ -1,0 +1,4 @@
+/snap/clion/219/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /home/osboxes/Desktop/ProgettoSOL -B /home/osboxes/Desktop/ProgettoSOL/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/osboxes/Desktop/ProgettoSOL/cmake-build-debug

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="ProgettoSOL"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ProgettoSOL">
+				<Option output="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/ProgettoSOL" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 ProgettoSOL"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ProgettoSOL/fast">
+				<Option output="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/ProgettoSOL" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 ProgettoSOL/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/Main.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/Collector.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/Master_Thread.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/Thread_Worker.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/ascending_queue.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/mystring.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/parameters.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/queue.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/Collector.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/Master_Thread.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/Thread_Worker.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/ascending_queue.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/mystring.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/queue.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/src/utilities.c">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/libs/utilities.h">
+			<Option target="ProgettoSOL"/>
+		</Unit>
+		<Unit filename="/home/osboxes/Desktop/ProgettoSOL/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
