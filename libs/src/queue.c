@@ -16,10 +16,6 @@ pthread_cond_t empty_queue = PTHREAD_COND_INITIALIZER;
  * Used to put the MasterWorker on wait status when the queue is full
  */
 pthread_cond_t full_queue = PTHREAD_COND_INITIALIZER;
-/**
- * Used to check if the queue is freed/closed/destroyed
- */
-bool queue_closed = false;
 
 queue* create_queue(int size){
     queue* q = malloc(sizeof(queue));
@@ -32,8 +28,6 @@ queue* create_queue(int size){
 }
 
 bool queue_isEmpty(queue* q){
-    if(queue_closed == true) return true;
-
     return q->head == NULL;
 }
 
@@ -46,7 +40,7 @@ void push(queue** q, char* filename, int length_str_filename){
 
     pthread_mutex_lock(&mutex_queue);
 
-    while(queue_isFull((*q)) == true && queue_closed == false){
+    while(queue_isFull((*q)) == true){
         pthread_cond_wait(&full_queue, &mutex_queue);
     }
 
@@ -77,22 +71,8 @@ data* pop(queue** q){
 
     pthread_mutex_lock(&mutex_queue);
 
-    if(queue_closed == true){
-        pthread_mutex_unlock(&mutex_queue);
-        return NULL;
-    }
-
     while(queue_isEmpty((*q)) == true){
-        if(queue_closed == true){
-            pthread_mutex_unlock(&mutex_queue);
-            return NULL;
-        }
         pthread_cond_wait(&empty_queue, &mutex_queue);
-    }
-
-    if(queue_closed == true){
-        pthread_mutex_unlock(&mutex_queue);
-        return NULL;
     }
 
     node* temp = (*q)->head;
@@ -137,8 +117,7 @@ void free_queue(queue* q){
         free(q->head);
         free(q);
     }
-
-    queue_closed = true;
+    
     pthread_cond_broadcast(&empty_queue);
     pthread_mutex_unlock(&mutex_queue);
 }

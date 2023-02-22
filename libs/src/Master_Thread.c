@@ -6,6 +6,8 @@
 #include "../Master_Thread.h"
 #include "../parameters.h"
 
+#define SOCKETNAME "./farm.sck"
+
 /**
  * Flag used to identify the SIGUSR1 signal
  */
@@ -14,10 +16,14 @@ volatile sig_atomic_t flag_print = 0;
  * Flag used to identify SIGINT, SIGQUIT, SIGHUP, SIGTERM signal
  */
 volatile sig_atomic_t flag_others_signals = 0;
+/**
+ * Flag used to identify SIGUSR2
+ */
+volatile sig_atomic_t flag_kill_sigusr2 = 0;
 
-static void signals_handler(int signum);
+static void signal_handler(int signum);
 
-int run_master_thread(int number_parameters, char* parameters[], int child_process, char* socket_name){
+int run_master_thread(int number_parameters, char* parameters[], int child_process){
     int option;
 
     /**
@@ -38,7 +44,7 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
     bool t_flag = false;
 
     struct sockaddr_un sa;
-    strcpy(sa.sun_path, socket_name);
+    strcpy(sa.sun_path, SOCKETNAME);
     sa.sun_family = AF_UNIX;
 
     /**
@@ -51,39 +57,80 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
 
     if(sigaction(SIGPIPE, &s, NULL) == -1){
         perror("sigaction SIGPIPE");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
         return -1;
     }
 
-    s.sa_handler = signals_handler;
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    s.sa_handler = signal_handler;
 
     if(sigaction(SIGUSR1, &s, NULL) == -1){
         perror("sigaction SIGUSR1");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
         return -1;
     }
 
     if(sigaction(SIGINT, &s, NULL) == -1){
         perror("sigaction SIGINT");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
         return -1;
     }
 
-    if(sigaction(SIGHUP, &s, NULL) == -1){
-        perror("sigaction SIGHUP");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
-        return -1;
-    }
-
-    if(sigaction(SIGTERM, &s, NULL) == -1){
-        perror("sigaction SIGTERM");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
         return -1;
     }
 
     if(sigaction(SIGQUIT, &s, NULL) == -1){
         perror("sigaction SIGQUIT");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(sigaction(SIGTERM, &s, NULL) == -1){
+        perror("sigaction SIGTERM");
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(sigaction(SIGHUP, &s, NULL) == -1){
+        perror("sigaction SIGHUP");
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(sigaction(SIGUSR2, &s, NULL) == -1){
+        perror("sigaction SIGUSR2");
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, NULL);
         return -1;
     }
 
@@ -93,11 +140,11 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
                 num_thread_worker = (int) isNumber(optarg);
                 if (num_thread_worker == -1) {
                     fprintf(stderr, "Option -n require an integer parameter\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 } else if (num_thread_worker <= 0) {
                     fprintf(stderr, "Option -n require positive integer parameter\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 }
                 n_flag = true;
@@ -107,11 +154,11 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
                 queue_length = (int) isNumber(optarg);
                 if (queue_length == -1) {
                     fprintf(stderr, "Option -q require an integer parameter\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 } else if (queue_length <= 0) {
                     fprintf(stderr, "Option -q require positive integer parameter\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 }
                 q_flag = true;
@@ -121,7 +168,7 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
                 directory_name = strndup(optarg, strlen(optarg));
                 if (isDir(directory_name) != 0) {
                     fprintf(stderr, "Option -d require a legit directory name\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 }
                 d_flag = true;
@@ -131,11 +178,11 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
                 time_delay = (int) isNumber(optarg);
                 if (time_delay == -1) {
                     fprintf(stderr, "Option -t require an integer parameter\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 } else if (time_delay < 0) {
                     fprintf(stderr, "Option -t require a positive integer parameter\n");
-                    shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                    shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                     return -1;
                 }
                 t_flag = true;
@@ -143,7 +190,7 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
             }
             case '?': {
                 fprintf(stderr, "Unknown option: %c\n", optopt);
-                shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+                shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
                 return -1;
             }
             default:
@@ -164,7 +211,12 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
 
     if (q == NULL) {
         fprintf(stderr, "Error in creating the queue\n");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, NULL);
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, NULL);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, -1, SOCKETNAME, q);
         return -1;
     }
 
@@ -173,19 +225,34 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
 
     if (fd_socket == -1) {
         perror("socket");
-        shutdown_master_thread_prematurely(child_process, -1, -1, socket_name, q);
+        shutdown_master_thread_prematurely(child_process, -1, -1, SOCKETNAME, q);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, fd_socket, SOCKETNAME, q);
         return -1;
     }
 
     if (bind(fd_socket, (struct sockaddr *) &sa, sizeof(sa)) == -1) {
         perror("bind");
-        shutdown_master_thread_prematurely(child_process, -1, fd_socket, socket_name, q);
+        shutdown_master_thread_prematurely(child_process, -1, fd_socket, SOCKETNAME, q);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, fd_socket, SOCKETNAME, q);
         return -1;
     }
 
     if (listen(fd_socket, 1) == -1) {
         perror("listen");
-        shutdown_master_thread_prematurely(child_process, -1, fd_socket, socket_name, q);
+        shutdown_master_thread_prematurely(child_process, -1, fd_socket, SOCKETNAME, q);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, -1, fd_socket, SOCKETNAME, q);
         return -1;
     }
 
@@ -194,7 +261,12 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
 
     if(fd_connected == -1){
         perror("accept");
-        shutdown_master_thread_prematurely(child_process, -1, fd_socket, socket_name, q);
+        shutdown_master_thread_prematurely(child_process, -1, fd_socket, SOCKETNAME, q);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(NULL, fd_connected, fd_socket, SOCKETNAME, q);
         return -1;
     }
 
@@ -206,8 +278,21 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
 
     pthread_t* thread_worker = spawn_threads(num_thread_worker, param);
 
+    if(thread_worker == NULL){
+        fprintf(stderr, "spawn_threads(): Error in creating pool of threads workers\n");
+        shutdown_master_thread_prematurely(child_process, fd_connected, fd_socket, SOCKETNAME, q);
+        free(param);
+        return -1;
+    }
+
+    if(flag_kill_sigusr2 == 1){
+        shutdown_master_thread_sigusr2(thread_worker, fd_connected, fd_socket, SOCKETNAME, q);
+        free(param);
+        return -1;
+    }
+
     if(flag_others_signals == 1){
-        shutdown_master_thread(thread_worker, child_process, fd_socket, socket_name, param);
+        shutdown_master_thread(thread_worker, child_process, fd_socket, SOCKETNAME, param);
         return -1;
     }
 
@@ -229,20 +314,26 @@ int run_master_thread(int number_parameters, char* parameters[], int child_proce
         }
 
         if(flag_others_signals == 1){
-            shutdown_master_thread(thread_worker, child_process, fd_socket, socket_name, param);
+            shutdown_master_thread(thread_worker, child_process, fd_socket, SOCKETNAME, param);
+            break;
+        }
+
+        if(flag_kill_sigusr2 == 1){
+            shutdown_master_thread_sigusr2(thread_worker, fd_connected, fd_socket, SOCKETNAME, q);
+            free(param);
             break;
         }
     }
 
-    if(flag_others_signals == 1){
+    if(flag_others_signals == 1 || flag_kill_sigusr2 == 1){
         return 0;
     }else{
         if (directory_name != NULL) {
-            scan_dir(directory_name, q, thread_worker, child_process, fd_connected, fd_socket, socket_name, param);
+            scan_dir(directory_name, q, thread_worker, child_process, fd_connected, fd_socket, SOCKETNAME, param);
         }
 
         if(flag_others_signals == 0){
-            shutdown_master_thread(thread_worker, child_process, fd_socket, socket_name, param);
+            shutdown_master_thread(thread_worker, child_process, fd_socket, SOCKETNAME, param);
             return 0;
         }
     }
@@ -257,17 +348,17 @@ pthread_t* spawn_threads(int n_threads, thread_parameter* param){
     for(int i = 0; i < n_threads; i++){
         if((pthread_attr_init(&thread_attr)) != 0){
             perror("pthread_attr_init");
-            exit(EXIT_FAILURE);
+            return NULL;
         }
 
         if((pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED)) != 0){
             perror("pthread_attr_setdetachstate");
-            exit(EXIT_FAILURE);
+            return NULL;
         }
 
         if((pthread_create(&thread_worker[i], &thread_attr, run_thread, param)) != 0){
             perror("pthread_create");
-            exit(EXIT_FAILURE);
+            return NULL;
         }
     }
 
@@ -304,6 +395,12 @@ void scan_dir(char* dirname, queue* q, pthread_t* thread_worker, int child_proce
                 free(abs_path);
             }
         }
+
+        if(flag_kill_sigusr2 == 1){
+            shutdown_master_thread_sigusr2(thread_worker, fd_connected, fd_socket, socket_name, q);
+            free(param);
+            break;
+        }
     }
     if(closedir(dir) != 0){
         perror("closedir");
@@ -311,27 +408,38 @@ void scan_dir(char* dirname, queue* q, pthread_t* thread_worker, int child_proce
     }
 }
 
-/**
- * Method used to handle the signals: SIGINT, SIGQUIT, SIGHUP, SIGTERM, SIGUSR1.
- * This method sets only one of the two flags to identify the type of signals: flag_print for SIGUSR1; flag_others_signals for the other four
- * @param signum Integer that represents the type of signal occurs
- */
-static void signals_handler(int signum){
+static void signal_handler(int signum){
     if(signum == SIGUSR1){
-        flag_print = 1;
-    }else if(signum == SIGINT || signum == SIGHUP || signum == SIGTERM || signum == SIGQUIT){
+        flag_print++;
+    }else if(signum == SIGINT || signum == SIGQUIT || signum == SIGTERM || signum == SIGHUP){
         flag_others_signals = 1;
+    }else if(signum == SIGUSR2){
+        flag_kill_sigusr2 = 1;
     }
 }
 
 void shutdown_master_thread(pthread_t* thread_worker, int child_process, int fd_socket, char* socket_name, thread_parameter* param){
-    push(param->queue, "finish", strlen("finish"));
-
-    for (int i = 0; i < num_thread_worker; i++) {
-        pthread_join(thread_worker[i], NULL);
+    for(int i = 0; i < num_thread_worker; i++) {
+        push(param->queue, "finish", strlen("finish"));
     }
 
     free(thread_worker);
+
+    ssize_t bytes_written;
+    char* string = "finish";
+    int length = (int) strlen(string);
+    bytes_written = writen(param->socket, &length, sizeof(int));
+    if(bytes_written != sizeof(int)){
+        fprintf(stderr, "MasterWorker: error in writen(), more or less bytes have been written than necessary\n");
+        shutdown_master_thread_prematurely(child_process, param->socket, fd_socket, socket_name, (*param->queue));
+        return;
+    }
+    bytes_written = writen(param->socket, string, sizeof(char) * length);
+    if(bytes_written != (sizeof(char) * length)){
+        fprintf(stderr, "MasterWorker: error in writen(), more or less bytes have been written than necessary\n");
+        shutdown_master_thread_prematurely(child_process, param->socket, fd_socket, socket_name, (*param->queue));
+        return;
+    }
 
     waitpid(child_process, NULL, 0);
 
@@ -366,10 +474,38 @@ void shutdown_master_thread_prematurely(int child_process, int fd_connected, int
     }
 
     if(q != NULL){
-        free(q);
+        free_queue(q);
     }
 
     free(directory_name);
+
+    return;
+}
+
+void shutdown_master_thread_sigusr2(pthread_t* thread_worker, int fd_connected, int fd_socket, char* socket_name, queue* q){
+    if(q != NULL && thread_worker != NULL){
+        for(int i = 0; i < num_thread_worker; i++){
+            push(&q, "finish", strlen("finish"));
+        }
+
+        free(thread_worker);
+
+        free_queue(q);
+    }else if(q != NULL){
+        free_queue(q);
+    }
+
+    if(fd_connected != -1){
+        close(fd_connected);
+    }
+
+    if(fd_socket != -1){
+        close(fd_socket);
+    }
+
+    if(socket_name != NULL){
+        remove(socket_name);
+    }
 
     return;
 }

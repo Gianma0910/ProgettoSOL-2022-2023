@@ -17,11 +17,13 @@ farm_lib = ./libs/src/Master_Thread.c \
 .SUFFIXES: .c .h
 .PHONY: all
 
-generafile: generafile.c
+compilation: compilation_generafile compilation_farm
+
+compilation_generafile: generafile.c
 	$(CC) generafile.c -o $(GENERAFILE_OUT)
 
-farm: Main.c
-	$(CC) $(INCLUDES) -o $(FARM_OUT) farm.c $(farm_lib) $(LIBS) $(FLAGS)
+compilation_farm: Main.c
+	$(CC) $(INCLUDES) -o $(FARM_OUT) Main.c $(farm_lib) $(LIBS) $(FLAGS)
 
 test: farm
 	@chmod +x ./test.sh
@@ -34,3 +36,6 @@ test1: farm
 test2: farm
 	@chmod +x ./script/test2.sh
 	./script/test2.sh
+
+clean:
+	rm *.dat expected.txt | rm -r testdir

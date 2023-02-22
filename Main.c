@@ -1,8 +1,6 @@
 #include "./libs/Master_Thread.h"
 #include "./libs/Collector.h"
 
-#define SOCKETNAME "./farm.sck"
-
 int main(int argc, char* argv[]) {
 
     if(argc == 1){
@@ -17,25 +15,25 @@ int main(int argc, char* argv[]) {
         perror("fork");
         exit(EXIT_FAILURE);
     }else if(pid == 0){ //child process
-        fprintf(stdout, "Processo figlio %d\n", getpid());
-        int error = run_collector(SOCKETNAME);
+        fprintf(stdout, "Child process %d\n\n", getpid());
+        int error = run_collector(getppid());
 
         if(error == 0){
-            fprintf(stdout, "Processo figlio %d terminato con successo\n", getpid());
+            fprintf(stdout, "Child process %d has terminated successfully\n", getpid());
             exit(EXIT_SUCCESS);
         }else{
-            fprintf(stdout, "Processo figlio %d terminato con fallimento\n", getpid());
+            fprintf(stdout, "Child process %d has terminated unsuccessfully\n", getpid());
             exit(EXIT_FAILURE);
         }
     }else {
-        fprintf(stdout, "Processo padre %d\n", getpid());
-        int error = run_master_thread(argc, argv, pid, SOCKETNAME);
+        fprintf(stdout, "Parent process %d\n\n", getpid());
+        int error = run_master_thread(argc, argv, pid);
 
         if(error == 0){
-            fprintf(stdout, "Processo padre %d terminato con successo\n", getpid());
+            fprintf(stdout, "Parent process %d has terminated successfully\n", getpid());
             exit(EXIT_SUCCESS);
         }else{
-            fprintf(stdout, "Processo padre %d terminato con fallimento\n", getpid());
+            fprintf(stdout, "Parent process %d has terminated unsuccessfully\n", getpid());
             exit(EXIT_FAILURE);
         }
     }

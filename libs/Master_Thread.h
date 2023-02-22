@@ -25,7 +25,7 @@
  * @param socket_name Name of the socket used to communicate with the Collector
  * @return An integer: 0 if it finishes with success, -1 otherwise
  */
-int run_master_thread(int number_parameters, char* parameters[], int child_process, char* socket_name);
+int run_master_thread(int number_parameters, char* parameters[], int child_process);
 /**
  * Method used to create thread worker of the thread pool
  * @param n_threads Number of thread worker to create
@@ -49,7 +49,7 @@ pthread_t* spawn_threads(int n_threads, thread_parameter* param);
  */
 void scan_dir(char* dirname, queue* q, pthread_t* thread_worker, int child_process, int fd_connected, int fd_socket, char* socket_name, thread_parameter* param);
 /**
- * Method used to shutdown the MasterThread and to free the memory allocated
+ * * Method used to shutdown the MasterThread and to free the memory allocated
  * @param thread_worker Array of the thread worker that will be free
  * @param child_process Identifier of the child process that MasterWorker must wait
  * @param fd_socket Integer that represents the file descriptor of socket that will be close
@@ -67,5 +67,13 @@ void shutdown_master_thread(pthread_t* thread_worker, int child_process, int fd_
  * @param q Queue that will be free/close
  */
 void shutdown_master_thread_prematurely(int child_process, int fd_connected, int fd_socket, char* socket_name, queue* q);
-
+/**
+ * Method used to shutdown the MasterThread when it receives SIGUSR2 signal from process Collector. It also free the memory allocated
+ * @param thread_worker Possible threads workers pool to free, it it's set NULL it can't be free
+ * @param fd_connected Possible socket file descriptor that has been generating from syscall accept(), if it's set -1 it can't be close
+ * @param fd_socket Possible socket file descriptor that has been creating from syscall socket(), if it's set -1 it can't be close
+ * @param socket_name Possible socket name to remove, it it's set NULL it can't be remove
+ * @param q Possible queue to free, if it's set NULL it can't be free.
+ */
+void shutdown_master_thread_sigusr2(pthread_t* thread_worker, int fd_connected, int fd_socket, char* socket_name, queue* q);
 #endif //PROGETTOSOL_MASTER_THREAD_H

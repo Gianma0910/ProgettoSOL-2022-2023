@@ -37,18 +37,12 @@ void* run_thread(void* arg);
  * @param length_buffer Length of the buffer
  * @return The result of the sum
  */
-long sum_elem_buffer(long buffer[], int length_buffer);
+long sum_elem_buffer(const long buffer[], int length_buffer);
 /**
  * Method used to open and the file inside the struct data. This method uses the sum_elem_buffer method to calculate the result
  * @param d Pointer to a struct data
  * @param param Parameters of the thread worker
  */
 void file_calculation(data* d, thread_parameter* param);
-/**
- * Method used to shutdown thread worker and to free the memory allocated
- * @param d Pointer to the struct data
- * @param param Parameters of the thread worker
- */
-void shutdown_thread_worker(data* d, thread_parameter* param);
 
 #endif //PROGETTOSOL_THREAD_WORKER_H
