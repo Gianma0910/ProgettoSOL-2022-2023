@@ -38,7 +38,7 @@ ascending_queue* create_ascending_queue();
  * @param queue Queue where to insert the element
  * @param filename Name of the file
  * @param value Result calculated from the file
- * @param length_str_filename Lenght of the string that represente the name of file
+ * @param length_str_filename Length of the string that represents the name of file
  */
 void push_ascending(ascending_queue** queue, char* filename, long value, size_t length_str_filename);
 /**

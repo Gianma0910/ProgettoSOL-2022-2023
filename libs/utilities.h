@@ -34,7 +34,8 @@ int isFile(const char* filename);
  * @param fd File descriptor of the socket where to read
  * @param ptr Pointer to where store the data read
  * @param n Number of bytes to read
- * @return The number of bytes that has been reading
+ * @return An integer that can be: -1 if there was an error while reading the content of the socket, so the method read sets variable errno;
+ * 0 if it's not possible to read the content of the socket because the server has closed his socket; the number of bytes has been reading
  */
 ssize_t readn(int fd, void* ptr, size_t n);
 /**
@@ -42,7 +43,8 @@ ssize_t readn(int fd, void* ptr, size_t n);
  * @param fd File descriptor of the socket where to write
  * @param ptr Pointer to the content to write
  * @param n Number of bytes to write
- * @return The number of bytes that has been writing
+ * @return An integer that can be: -1 if there was an error while writing into the socket, so the method write sets variable errno;
+ * 0 if it's not possible to write into the socket because the client has closed his socket; the number of bytes has been writing
  */
 ssize_t writen(int fd, void* ptr, size_t n);
 /**

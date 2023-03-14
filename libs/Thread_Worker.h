@@ -17,6 +17,7 @@
  * @param queue Queue where thread pop the elements
  * @param flag_print Flag to control if signal SIGUSR1 occurs
  * @param flag_others_signals Flag to control if one of those signals occurs: SIGINT, SIGHUP, SIGTERM, SIGQUIT
+ * @param mutex_socket Mutex to manage the access to the socket that is common for all the threads workers
  */
 typedef struct thread_parameter{
     int socket;
@@ -29,7 +30,6 @@ typedef struct thread_parameter{
 /**
  * Method used to start the thread's run
  * @param arg Argument passed to thread, it must be a pointer to struct thread_parameter
- * @return
  */
 void* run_thread(void* arg);
 /**

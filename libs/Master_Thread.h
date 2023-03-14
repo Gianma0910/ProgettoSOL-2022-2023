@@ -58,8 +58,8 @@ void scan_dir(char* dirname, queue* q, pthread_t* thread_worker, int child_proce
  */
 void shutdown_master_thread(pthread_t* thread_worker, int child_process, int fd_socket, char* socket_name, thread_parameter* param);
 /**
- * Method used to shutdown prematurely the MasterThread and free the memory allocated. It is used only in case if a syscall had an error
- * or if there was an error during the configuration of CLI parameters.
+ * Method used to shutdown prematurely the MasterThread and free the memory allocated. It is used only in case if a syscall had an error,
+ * if there was an error during the configuration of CLI parameters, if there was an error while writing into the socket
  * @param child_process Identifier of the child process that MasterWorker must wait and must send the SIGUSR2 signal
  * @param fd_connected Integer that represents the file descriptor of socket created with accept that will be close
  * @param fd_socket Integer that represents the file descriptor of socket that will be close

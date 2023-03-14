@@ -17,7 +17,6 @@
 int run_collector();
 /**
  * Method used to shutdown the Collector and to free the memory allocated.
- * It is used only in case the signal SIGUSR2 is detected.
  * @param q Possible queue to free, if it's set NULL it can't be free
  * @param socket Possible socket to free, if it's set -1 it can't be free
  * @param socket_name Possible name of socket to remove, it if's set NULL it can't be free
