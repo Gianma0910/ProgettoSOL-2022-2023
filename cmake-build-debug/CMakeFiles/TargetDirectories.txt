@@ -1,0 +1,3 @@
+/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/CMakeFiles/ProgettoSOL.dir
+/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/osboxes/Desktop/ProgettoSOL/cmake-build-debug/CMakeFiles/rebuild_cache.dir
